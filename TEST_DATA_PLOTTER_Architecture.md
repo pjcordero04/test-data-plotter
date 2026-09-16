@@ -379,6 +379,17 @@ Standard library: `io`, `os`, `re`, `zipfile`, `pathlib`, `datetime`, `functools
 
 ---
 
+## Changelog
+
+| Date | Change |
+|------|--------|
+| 2026-09-16 | `compute_mean_std_min_max()` now returns **median** (5 values instead of 4) |
+| 2026-09-16 | `build_summary_wide()` includes **Median** row in summary export |
+| 2026-09-16 | Added `cached_parse_all_summaries()` — `@st.cache_data` wrapper for parsed summary data, eliminates re-reading ZIPs on parameter switch |
+| 2026-09-16 | `parse_summary_text()` no longer stops at "Background Limit Results" — continues parsing with `BG` prefix; disambiguates duplicate parameter names by appending `[UL:value]` when limits differ |
+
+---
+
 ## License
 
 Internal use only — Koch Industries / Molex.

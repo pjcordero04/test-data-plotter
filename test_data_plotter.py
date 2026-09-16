@@ -475,16 +475,17 @@ def compute_cpk_separate(vals, ll, ul):
 
 
 def compute_mean_std_min_max(df_in: pd.DataFrame, value_col="Result"):
-    """Compute mean, sample std, min, max of values."""
+    """Compute mean, median, sample std, min, max of values."""
     vals = pd.to_numeric(df_in[value_col], errors="coerce").dropna()
     if vals.empty:
-        return None, None, None, None
+        return None, None, None, None, None
 
     mean = float(vals.mean())
+    median = float(vals.median())
     std = float(vals.std(ddof=1)) if vals.shape[0] >= 2 else None
     min_val = float(vals.min())
     max_val = float(vals.max())
-    return mean, std, min_val, max_val
+    return mean, median, std, min_val, max_val
 
 
 def auto_histogram_bins(values: pd.Series, min_bins: int = 8, max_bins: int = 60) -> int:
@@ -600,10 +601,10 @@ def extract_selected_sns(selection_event, filtered_plot: pd.DataFrame, plot_type
 def build_summary_wide(df, parameters, value_col, unit_col, ll_col, ul_col):
     """
     Build a wide-format summary DataFrame:
-      rows = [Unit, Count, Mean, Std Dev, Min, Max, Range, Lower Limit, Upper Limit, Cpk (lower), Cpk (upper)]
+      rows = [Unit, Count, Mean, Median, Std Dev, Min, Max, Range, Lower Limit, Upper Limit, Cpk (lower), Cpk (upper)]
       columns = parameters
     """
-    summary_data = {"Statistic": ["Unit", "Count", "Mean", "Std Dev", "Min", "Max",
+    summary_data = {"Statistic": ["Unit", "Count", "Mean", "Median", "Std Dev", "Min", "Max",
                                    "Range", "Lower Limit", "Upper Limit", "Cpk (lower)", "Cpk (upper)"]}
 
     for param in parameters:
@@ -611,6 +612,7 @@ def build_summary_wide(df, parameters, value_col, unit_col, ll_col, ul_col):
         vals = pd.to_numeric(subset[value_col], errors="coerce").dropna()
         n = int(vals.shape[0])
         mean = float(vals.mean()) if n > 0 else None
+        median = float(vals.median()) if n > 0 else None
         std = float(vals.std(ddof=1)) if n >= 2 else None
         vmin = float(vals.min()) if n > 0 else None
         vmax = float(vals.max()) if n > 0 else None
@@ -637,6 +639,7 @@ def build_summary_wide(df, parameters, value_col, unit_col, ll_col, ul_col):
             unit_val,
             str(n),
             fmt(mean),
+            fmt(median),
             fmt(std),
             fmt(vmin),
             fmt(vmax),
@@ -1027,9 +1030,10 @@ if test_mode == "SI Test":
 
                 total_n, pass_n, fail_n, yield_pct = compute_yield(filtered_plot, eff_ll, eff_ul)
                 cpk_val = compute_cpk(filtered_plot, eff_ll, eff_ul)
-                mean_val, std_val, min_val, max_val = compute_mean_std_min_max(filtered_plot)
+                mean_val, median_val, std_val, min_val, max_val = compute_mean_std_min_max(filtered_plot)
                 cpk_txt = "N/A" if cpk_val is None else f"{cpk_val:.3f}"
                 mean_txt = "N/A" if mean_val is None else f"{mean_val:.4f}"
+                median_txt = "N/A" if median_val is None else f"{median_val:.4f}"
                 std_txt = "N/A" if std_val is None else f"{std_val:.4f}"
                 min_txt = "N/A" if min_val is None else f"{min_val:.4f}"
                 max_txt = "N/A" if max_val is None else f"{max_val:.4f}"
@@ -1041,6 +1045,7 @@ if test_mode == "SI Test":
                     <div style='font-size:14px; line-height:1.6;'>
                     <b>Count:</b> {total_n}<br>
                     <b>Mean:</b> {mean_txt} {unit}<br>
+                    <b>Median:</b> {median_txt} {unit}<br>
                     <b>Std Dev:</b> {std_txt}<br>
                     <b>Min:</b> {min_txt}<br>
                     <b>Max:</b> {max_txt}<br>
@@ -1493,6 +1498,7 @@ elif test_mode == "ETest":
             etest_vals = pd.to_numeric(etest_filtered_plot["Value"], errors="coerce").dropna()
             etest_n = int(etest_vals.shape[0])
             etest_mean = float(etest_vals.mean()) if etest_n > 0 else None
+            etest_median = float(etest_vals.median()) if etest_n > 0 else None
             etest_std = float(etest_vals.std(ddof=1)) if etest_n >= 2 else None
             etest_min = float(etest_vals.min()) if etest_n > 0 else None
             etest_max = float(etest_vals.max()) if etest_n > 0 else None
@@ -1505,6 +1511,7 @@ elif test_mode == "ETest":
 
             cpk_txt = "N/A" if cpk_val is None else f"{cpk_val:.3f}"
             mean_txt = "N/A" if etest_mean is None else f"{etest_mean:.4f}"
+            median_txt = "N/A" if etest_median is None else f"{etest_median:.4f}"
             std_txt = "N/A" if etest_std is None else f"{etest_std:.4f}"
             min_txt = "N/A" if etest_min is None else f"{etest_min:.4f}"
             max_txt = "N/A" if etest_max is None else f"{etest_max:.4f}"
@@ -1517,6 +1524,7 @@ elif test_mode == "ETest":
                 <div style='font-size:14px; line-height:1.6;'>
                 <b>Count:</b> {etest_n}<br>
                 <b>Mean:</b> {mean_txt} {etest_unit}<br>
+                <b>Median:</b> {median_txt} {etest_unit}<br>
                 <b>Std Dev:</b> {std_txt}<br>
                 <b>Min:</b> {min_txt}<br>
                 <b>Max:</b> {max_txt}<br>

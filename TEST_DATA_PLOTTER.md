@@ -13,7 +13,7 @@ A unified Streamlit web application for visualizing and analyzing test data from
 ### Common (Both Modes)
 - **Interactive Scatter Plot** — X=unit sequence, Y=measured value, with mean/±3σ/limit lines in legend
 - **Interactive Histogram** — Distribution with normal curve overlay and limit markers
-- **Statistics Panel** — Count, Mean, Std Dev, Min, Max, Lower Limit, Upper Limit, Yield, Cpk
+- **Statistics Panel** — Count, Mean, Median, Std Dev, Min, Max, Lower Limit, Upper Limit, Yield, Cpk
 - **Custom Limits** — Toggle to override spec limits; text boxes are disabled (grayed out) when off, reset to originals automatically
 - **Download Summary CSV** — All parameters summarized in wide format (rows=stats, columns=parameters)
 - **Delete Mode** — Drag-select outlier points to exclude from analysis (per parameter, with Restore All)
@@ -230,6 +230,17 @@ TEST_DATA_PLOTTER/
 | All values identical (ETest) | WIRE measurements at 0.1 Ohm resolution may show zero std dev — this is normal |
 | Cpk shows "N/A" | Requires at least 2 data points and non-zero standard deviation |
 | Waveform legend too crowded | Click a legend entry to isolate that trace; double-click to toggle |
+
+---
+
+## Changelog
+
+| Date | Change |
+|------|--------|
+| 2026-09-16 | Added **Median** to statistics panel, summary CSV export, and `compute_mean_std_min_max()` (both SI and ETest modes) |
+| 2026-09-16 | Added **cached data extraction** — parsed summary data is now cached so switching parameters is instant |
+| 2026-09-16 | Added **Background Limit parameters** — parameters after "Background Limit Results" are now included with a `BG` prefix |
+| 2026-09-16 | Added **duplicate parameter disambiguation** — parameters with the same name but different limits are distinguished (e.g., `[UL:0.1]` vs `[UL:None]`) |
 
 ---
 

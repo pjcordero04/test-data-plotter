@@ -18,7 +18,7 @@ A video walkthrough is included in the repository: `test_data_plotter_demo_vid.m
 ### Common (Both Modes)
 - **Interactive Scatter Plot** — X = unit sequence, Y = measured value, with mean / ±3σ / limit lines in legend
 - **Interactive Histogram** — Distribution with normal curve overlay and limit markers
-- **Statistics Panel** — Count, Mean, Std Dev, Min, Max, Lower Limit, Upper Limit, Yield, Cpk
+- **Statistics Panel** — Count, Mean, Median, Std Dev, Min, Max, Lower Limit, Upper Limit, Yield, Cpk
 - **Custom Limits** — Toggle to override spec limits; text boxes are disabled (grayed out) when off, reset to originals automatically
 - **Download Summary CSV** — All parameters summarized in wide format (rows = stats, columns = parameters)
 - **Delete Mode** — Drag-select outlier points to exclude from analysis (per parameter, with Restore All)
@@ -226,6 +226,17 @@ Additional documentation is available in:
 - `TEST_DATA_PLOTTER.md` — Detailed user documentation
 - `TEST_DATA_PLOTTER_Architecture.md` — Technical architecture document
 - `test_data_plotter_demo_vid.mp4` — Video demo/tutorial
+
+---
+
+## Changelog
+
+| Date | Change |
+|------|--------|
+| 2026-09-16 | Added **Median** to statistics panel and summary CSV export (both SI and ETest modes) |
+| 2026-09-16 | Added **cached data extraction** — switching parameters is now instant (no re-reading ZIPs) |
+| 2026-09-16 | Added **Background Limit parameters** with `BG` prefix |
+| 2026-09-16 | Added **duplicate parameter disambiguation** by limits (e.g., `[UL:0.1]` vs `[UL:None]`) |
 
 ---
 
